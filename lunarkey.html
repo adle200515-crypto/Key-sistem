@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>🌙 Lunarkey — Key System</title>
+<style>
+  :root{--bg1:#071120;--bg2:#2b003e;--accent:#8b5cf6}
+  html,body{height:100%;margin:0;font-family:Inter,Arial;background:linear-gradient(135deg,var(--bg1),var(--bg2));color:#fff}
+  .wrap{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;box-sizing:border-box}
+  h1{margin:0 0 6px;font-size:1.6rem}
+  p.sub{color:#d6ccff;margin:0 0 14px;text-align:center}
+  .controls{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+  button{background:var(--accent);border:none;padding:10px 16px;border-radius:10px;color:white;font-weight:600;cursor:pointer}
+  button.secondary{background:transparent;border:1px solid rgba(255,255,255,.12)}
+  #keyBox{margin-top:18px;background:rgba(255,255,255,0.06);padding:12px 16px;border-radius:8px;min-width:220px;text-align:center;display:none}
+  #daysBox{margin-top:8px;color:#e6e6e6;font-size:.95rem}
+  footer{margin-top:26px;font-size:.85rem;color:#bbb}
+  .note{font-size:0.9rem;color:#cfc9ff;margin-top:12px;text-align:center;max-width:420px}
+  input{padding:8px;border-radius:8px;border:none;min-width:180px}
+  .verify{margin-top:12px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>🌙 Lunarkey</h1>
+    <p class="sub">Pulsa "Obtener Key" para ver la key actual. Cambia cada 5 días. Puedes copiarla y usarla en tu juego.</p>
+
+    <div class="controls">
+      <button id="getBtn">Obtener Key</button>
+      <button id="copyBtn" class="secondary" style="display:none">Copiar Key</button>
+    </div>
+
+    <div id="keyBox" role="status" aria-live="polite"></div>
+    <div id="daysBox"></div>
+
+    <div class="note">Si abriste este archivo desde tu teléfono: usa el botón "Compartir" del navegador para enviar el enlace del archivo o abre el archivo localmente desde el gestor de archivos con un navegador (Chrome/Firefox).</div>
+
+    <footer>© 2025 Lunarkey</footer>
+  </div>
+
+<script>
+  function getLunarKey() {
+    const base = "lunar-";
+    const msPer5Days = 5 * 24 * 60 * 60 * 1000;
+    const index = Math.floor(Date.now() / msPer5Days);
+    const num = (index * 1234567 + 890123) % 1000000;
+    return base + String(num).padStart(6,"0");
+  }
+
+  function daysUntilNextChange() {
+    const msPer5Days = 5 * 24 * 60 * 60 * 1000;
+    const now = Date.now();
+    const periodStart = Math.floor(now / msPer5Days) * msPer5Days;
+    const next = periodStart + msPer5Days;
+    const diff = next - now;
+    return Math.max(0, Math.ceil(diff / (24 * 60 * 60 * 1000)));
+  }
+
+  const getBtn = document.getElementById('getBtn');
+  const copyBtn = document.getElementById('copyBtn');
+  const keyBox = document.getElementById('keyBox');
+  const daysBox = document.getElementById('daysBox');
+
+  getBtn.addEventListener('click', () => {
+    const k = getLunarKey();
+    keyBox.textContent = "Key actual: " + k;
+    keyBox.style.display = "block";
+    copyBtn.style.display = "inline-block";
+    daysBox.textContent = "Días hasta el próximo cambio: " + daysUntilNextChange();
+  });
+
+  copyBtn.addEventListener('click', async () => {
+    const k = getLunarKey();
+    try {
+      await navigator.clipboard.writeText(k);
+      copyBtn.textContent = "Copiado ✓";
+      setTimeout(()=> copyBtn.textContent = "Copiar Key",1400);
+    } catch(e) {
+      prompt("Copia la key manualmente:", k);
+    }
+  });
+</script>
+</body>
+</html>
