@@ -1,0 +1,46 @@
+local function sendChat(message)
+local TextChatService = game:GetService("TextChatService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+if TextChatService.ChatVersion == Enum.ChatVersion.TextChatService then  
+    local generalChannel = TextChatService.TextChannels:FindFirstChild("RBXGeneral")  
+    if generalChannel then  
+        generalChannel:SendAsync(message)  
+    end  
+else  
+    local sayMessage = ReplicatedStorage:FindFirstChild("DefaultChatSystemChatEvents"):FindFirstChild("SayMessageRequest")  
+    if sayMessage then  
+        sayMessage:FireServer(message, "All")  
+    end  
+end
+
+end
+
+sendChat("-gh 139904067056008, 108186273151388, 72292903231768, 84451219120140, 95290698984301, 14254923976 17163596085 4504231783")
+
+wait(1)
+
+local Global = (getgenv and getgenv()) or shared
+Global.GelatekReanimateConfig = {
+["AnimationsDisabled"] = false,
+["R15ToR6"] = false,
+["DontBreakHairWelds"] = false,
+["PermanentDeath"] = true,
+["Headless"] = false,
+["TeleportBackWhenVoided"] = false,
+["AlignReanimate"] = false,
+["FullForceAlign"] = false,
+["FasterHeartbeat"] = true,
+["DynamicalVelocity"] = true,
+["DisableTweaks"] = false,
+["OptimizeGame"] = true,
+["LoadLibrary"] = false,
+["DetailedCredits"] = false,
+["TorsoFling"] = true,
+["BulletEnabled"] = true,
+["BulletConfig"] = {
+["RunAfterReanimate"] = true,
+["LockBulletOnTorso"] = false
+}
+}
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Gelatekussy/GelatekReanimate/main/Main.lua"))()
